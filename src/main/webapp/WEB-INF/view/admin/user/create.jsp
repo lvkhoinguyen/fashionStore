@@ -24,7 +24,7 @@
                             <h3>Create a User</h3>
                             <hr />
  
-                            <form:form action="/admin/user/create1" method="post" modelAttribute="newUser">
+                            <form:form action="/admin/user/create" method="post" modelAttribute="newUser">
                                 <div class="mb-3">
                                     <label class="form-label">Full Name:</label>
                                     <form:input type="text" name="fullName" class="form-control" path="fullName" />
