@@ -42,7 +42,9 @@
                                             <td>${user.email}</td>
                                             <td>${user.fullName}</td>
                                             <td>
-                                                <a href="/admin/user/edit/${user.id}"
+                                                <a href="/admin/user/view/${user.id}"
+                                                    class="btn btn-success btn-sm">View</a>
+                                                <a href="/admin/user/update/${user.id}"
                                                     class="btn btn-warning btn-sm">Edit</a>
                                                 <a href="/admin/user/delete/${user.id}" class="btn btn-danger btn-sm"
                                                     onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>

@@ -4,7 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,4 +56,27 @@ public class UserController {
         return "admin/user/table-user";
     }
 
+    @GetMapping("/admin/user/view/{id}")
+    public String getUserDetailPage(Model model, @PathVariable Long id) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "admin/user/show";
+    }
+
+    @GetMapping("/admin/user/update/{id}")
+    public String getUpdateUserPage(Model model, @PathVariable Long id) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "admin/user/update";
+    }
+
+    @PostMapping("/admin/user/update")
+    public String getUpdateUser(@ModelAttribute("user") User user) {
+        User currentUser = userService.getUserById(user.getId());
+        currentUser.setAddress(user.getAddress());
+        currentUser.setPhone(user.getPhone());
+        currentUser.setFullName(user.getFullName());
+        this.userService.handleSaveUser(currentUser);
+        return "redirect:/admin/user";
+    }
 }
