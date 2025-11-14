@@ -48,17 +48,10 @@ public class UserController {
 
     @PostMapping(value = "/admin/user/create")
     public String createUserPage(Model model, @ModelAttribute("newUser") User hoidanit) {
-
-        // Mã hóa mật khẩu trước
         String hashedPassword = passwordEncoder.encode(hoidanit.getPassword());
         hoidanit.setPassword(hashedPassword);
-
-        // Gán Role đã có trong DB
         hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
-
-        // Lưu user sau khi đã chuẩn bị đầy đủ
         this.userService.handleSaveUser(hoidanit);
-
         return "redirect:/admin/user";
     }
 
@@ -97,8 +90,6 @@ public class UserController {
     @GetMapping("/admin/user/delete/{id}")
     public String getDeleteUserPage(Model model, @PathVariable Long id) {
         model.addAttribute("id", id);
-        // User user = new User();
-        // user.setId(id);
         model.addAttribute("newUser", new User());
         return "admin/user/delete";
     }
@@ -106,7 +97,6 @@ public class UserController {
     @PostMapping("/admin/user/delete/{id}")
     public String postDeleteUser(Model model, @ModelAttribute("newUser") User user) {
         this.userService.deleteAUser(user.getId());
-
         return "redirect:/admin/user";
     }
 
