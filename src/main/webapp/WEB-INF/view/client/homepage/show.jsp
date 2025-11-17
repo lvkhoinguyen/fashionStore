@@ -226,6 +226,77 @@
 
                     </section><!-- /About Section -->
 
+                    <div class="container my-5">
+                        <h2 class="text-center mb-4">🛒 Sản Phẩm Nổi Bật</h2>
+                        <div class="row row-cols-1 row-cols-md-4 g-4">
+
+                            <%-- Vòng lặp JSTL để duyệt qua danh sách sản phẩm --%>
+                                <c:forEach var="product" items="${products}">
+                                    <div class="col">
+                                        <div class="card h-100 shadow-sm">
+
+                                            <%-- Hình ảnh sản phẩm --%>
+                                                <img src="${product.image}" class="card-img-top" alt="${product.name}"
+                                                    style="height: 250px; object-fit: contain; padding: 15px;">
+
+                                                <div class="card-body d-flex flex-column">
+                                                    <%-- Tên sản phẩm, liên kết đến trang chi tiết --%>
+                                                        <h5 class="card-title">
+                                                            <a href="/products/${product.id}"
+                                                                class="text-decoration-none text-dark">
+                                                                <c:out value="${product.name}" />
+                                                            </a>
+                                                        </h5>
+
+                                                        <%-- Mô tả ngắn --%>
+                                                            <p class="card-text text-muted">${product.shortDesc}</p>
+
+                                                            <%-- Giá sản phẩm --%>
+                                                                <h4 class="text-danger mt-auto mb-3">
+                                                                    <c:out value="${product.price}" /> VNĐ
+                                                                </h4>
+
+                                                                <%-- Nút mua hàng/xem chi tiết --%>
+                                                                    <div class="d-grid gap-2">
+                                                                        <a href="/products/${product.id}"
+                                                                            class="btn btn-outline-primary">
+                                                                            <i class="fas fa-eye"></i> Xem Chi Tiết
+                                                                        </a>
+                                                                        <button class="btn btn-success"
+                                                                            onclick="addToCart('${product.id}')" <c:if
+                                                                            test="${product.quantity == 0}">disabled
+                                                                            </c:if>
+                                                                            >
+                                                                            <i class="fas fa-cart-plus"></i> Thêm vào
+                                                                            giỏ
+                                                                        </button>
+                                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+
+                                <%-- Xử lý trường hợp không có sản phẩm nào --%>
+                                    <c:if test="${empty products}">
+                                        <div class="col-12">
+                                            <div class="alert alert-info text-center" role="alert">
+                                                Hiện chưa có sản phẩm nào để hiển thị.
+                                            </div>
+                                        </div>
+                                    </c:if>
+
+                        </div>
+                    </div>
+
+                    <script>
+                        function addToCart(productId) {
+                            alert('Đã thêm sản phẩm ID: ' + productId + ' vào giỏ hàng!');
+                            // Thêm logic AJAX thực tế ở đây
+                        }
+                    </script>
+
+
+
                     <!-- Services Section -->
                     <section id="services" class="services section">
 
