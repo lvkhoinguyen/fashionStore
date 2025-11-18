@@ -2,9 +2,13 @@ package com.clothingstore.fashionStore.controller.admin;
 
 import java.util.List;
 
+import javax.naming.Binding;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +19,7 @@ import com.clothingstore.fashionStore.domain.User;
 import com.clothingstore.fashionStore.service.UserService;
 
 import jakarta.servlet.ServletContext;
+import jakarta.validation.Valid;
 
 @Controller
 public class UserController {
@@ -47,7 +52,15 @@ public class UserController {
     }
 
     @PostMapping(value = "/admin/user/create")
-    public String createUserPage(Model model, @ModelAttribute("newUser") User hoidanit) {
+    public String createUserPage(Model model, @ModelAttribute("newUser") @Valid User hoidanit,
+            BindingResult bindingResult) {
+        List<FieldError> errors = bindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(error.getField() + " - " + error.getDefaultMessage());
+        }
+        if (bindingResult.hasErrors()) {
+            return "admin/user/create";
+        }
         String hashedPassword = passwordEncoder.encode(hoidanit.getPassword());
         hoidanit.setPassword(hashedPassword);
         hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));

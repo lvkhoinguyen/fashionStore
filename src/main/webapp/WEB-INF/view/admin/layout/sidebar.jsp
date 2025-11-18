@@ -21,7 +21,7 @@
                     </li><!-- End Icons Nav -->
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/user">
+                        <a class="nav-link collapsed" href="/admin/user">
                             <i class="bi bi-gem"></i><span>User</span>
                         </a>
                     </li>

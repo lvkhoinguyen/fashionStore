@@ -32,7 +32,7 @@
                     <link href="/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
                     <link href="/assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
-                    <!-- *THÊM* Font Awesome nếu chưa có trong NiceAdmin, cần cho các icon "fas" -->
+                    <!-- *THÊM* Font Awesome (đã có trong code của bạn) -->
                     <link rel="stylesheet"
                         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -51,7 +51,6 @@
 
                         <!-- Nội dung chính -->
                         <div class="pagetitle">
-                            <!-- Sử dụng class 'pagetitle' của NiceAdmin thay vì 'container my-5' -->
                             <h1 class="page-title">Manage Products</h1>
                             <nav>
                                 <ol class="breadcrumb">
@@ -71,7 +70,10 @@
                                             <!-- Tiêu đề bảng và nút Create -->
                                             <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
                                                 <h5 class="card-title">Table products</h5>
-                                                <a href="/products/create" class="btn btn-primary btn-sm rounded-pill">
+
+                                                <!-- SỬA ĐƯỜNG DẪN TẠO MỚI (Dùng đường dẫn tuyệt đối) -->
+                                                <a href="/admin/product/create"
+                                                    class="btn btn-primary btn-sm rounded-pill">
                                                     <i class="fas fa-plus me-1"></i> Create a product
                                                 </a>
                                             </div>
@@ -82,40 +84,52 @@
                                                     <thead class="table-light">
                                                         <tr>
                                                             <th scope="col" style="width: 5%;">ID</th>
-                                                            <th scope="col" style="width: 30%;">Name</th>
+                                                            <th scope="col" style="width: 35%;">Name</th>
                                                             <th scope="col" style="width: 15%;">Price</th>
-                                                            <th scope="col" style="width: 25%;">Factory</th>
-                                                            <th scope="col" style="width: 25%;">Action</th>
+                                                            <th scope="col" style="width: 10%;">Quantity</th>
+                                                            <th scope="col" style="width: 35%;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        <!-- Vòng lặp hiển thị danh sách sản phẩm -->
                                                         <c:forEach var="product" items="${products}">
                                                             <tr>
                                                                 <th scope="row">
                                                                     <c:out value="${product.id}" />
                                                                 </th>
                                                                 <td>
-                                                                    <c:out value="${product.name}" />
+                                                                    <a href="/admin/product/detail/${product.id}">
+                                                                        <c:out value="${product.name}" />
+                                                                    </a>
                                                                 </td>
                                                                 <td>
-                                                                    <!-- ĐÃ CẢI TIẾN: Định dạng số có dấu phân cách -->
+                                                                    <!-- Định dạng số có dấu phân cách -->
                                                                     <fmt:formatNumber value="${product.price}"
                                                                         type="number" groupingUsed="true" /> VNĐ
                                                                 </td>
                                                                 <td>
-                                                                    <c:out value="${product.factory}" />
+                                                                    <c:out value="${product.quantity}" />
                                                                 </td>
                                                                 <td class="action-btns">
+                                                                    <!-- Nút Detail (Xem chi tiết) -->
+                                                                    <a href="/admin/product/detail/${product.id}"
+                                                                        class="btn btn-info btn-sm me-2"
+                                                                        title="Xem chi tiết">
+                                                                        <i class="bi bi-eye"></i>
+                                                                    </a>
                                                                     <!-- Nút Edit (Chỉnh sửa) -->
-                                                                    <a href="/products/edit/${product.id}"
-                                                                        class="btn btn-warning btn-sm me-2">
-                                                                        <i class="fas fa-edit"></i> Edit
+                                                                    <!-- SỬA ĐƯỜNG DẪN EDIT -->
+                                                                    <a href="/admin/product/edit/${product.id}"
+                                                                        class="btn btn-warning btn-sm me-2"
+                                                                        title="Chỉnh sửa">
+                                                                        <i class="fas fa-edit"></i>
                                                                     </a>
                                                                     <!-- Nút Delete (Xóa) -->
                                                                     <button
                                                                         onclick="confirmDelete('${product.id}', '${product.name}')"
-                                                                        class="btn btn-danger btn-sm">
-                                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                                        class="btn btn-danger btn-sm"
+                                                                        title="Xóa sản phẩm">
+                                                                        <i class="fas fa-trash-alt"></i>
                                                                     </button>
                                                                 </td>
                                                             </tr>
@@ -125,7 +139,8 @@
                                                         <c:if test="${empty products}">
                                                             <tr>
                                                                 <td colspan="5" class="text-center text-muted py-4">
-                                                                    Không có sản phẩm nào được tìm thấy.
+                                                                    Không có sản phẩm nào được tìm thấy. Vui lòng tạo
+                                                                    sản phẩm mới.
                                                                 </td>
                                                             </tr>
                                                         </c:if>
@@ -142,13 +157,13 @@
 
                         <!-- Scripts -->
                         <script>
-                            // HÀM NÀY NÊN ĐƯỢC THAY THẾ BẰNG BOOTSTRAP MODAL
+                            // HÀM XỬ LÝ XÓA
                             function confirmDelete(productId, productName) {
-                                // Sử dụng confirm() thay cho alert() hoặc modal tùy chỉnh
+                                // Sử dụng Modal tùy chỉnh thay vì alert/confirm (trong môi trường Production)
                                 if (confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${productName}" (ID: ${productId}) không?`)) {
-                                    // Chuyển hướng đến URL xóa. Bạn có thể thay thế bằng AJAX nếu muốn.
+                                    // SỬA ĐƯỜNG DẪN DELETE
                                     console.log('Xóa sản phẩm ID:', productId);
-                                    window.location.href = '/products/delete/' + productId;
+                                    window.location.href = '/admin/product/delete/' + productId;
                                 }
                             }
                         </script>
@@ -157,7 +172,7 @@
                     </main><!-- End #main -->
 
 
-                    <jsp:include page="../layout/footer.jsp" />
+                    <jsp:include page="../../layout/footer.jsp" />
 
                     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
                             class="bi bi-arrow-up-short"></i></a>

@@ -71,24 +71,28 @@
                                             <div class="col-12">
                                                 <label for="fullName" class="form-label">Full Name</label>
                                                 <form:input type="text" id="fullName" class="form-control"
-                                                    path="fullName" />
-                                                <%-- Error message placeholder: <form:errors path="fullName"
-                                                    class="text-danger" /> --%>
+                                                    cssErrorClass="form-control is-invalid" path="fullName" />
+                                                <form:errors path="fullName" cssClass="invalid-feedback" />
                                             </div>
 
                                             <div class="col-12">
                                                 <label for="email" class="form-label">Email</label>
-                                                <form:input type="email" id="email" class="form-control" path="email" />
-                                                <%-- Error message placeholder: <form:errors path="email"
-                                                    class="text-danger" /> --%>
+                                                <form:input type="email" id="email" cssClass="form-control"
+                                                    cssErrorClass="form-control is-invalid" path="email" />
+                                                <form:errors path="email" cssClass="invalid-feedback" />
                                             </div>
 
                                             <div class="col-12">
                                                 <label for="password" class="form-label">Password</label>
-                                                <form:input type="password" id="password" class="form-control"
-                                                    path="password" />
-                                                <%-- Error message placeholder: <form:errors path="password"
-                                                    class="text-danger" /> --%>
+                                                <c:set var="nameHasBindError">
+                                                    <form:errors path="password" />
+                                                </c:set>
+                                                <form:input type="password" id="password"
+                                                    class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
+                                                    cssErrorClass="form-control is-invalid" path="password" />
+                                                ${errorPassword}
+                                                <form:errors path="password" cssClass="invalid-feedback" />
+
                                             </div>
 
                                             <div class="col-12">
@@ -119,7 +123,7 @@
                                                     <form:option value="USER">USER</form:option>
                                                 </form:select>
                                             </div>
-x   
+
 
                                             <div class="col-12 col-md-6">
                                                 <label class="form-label d-block">Preview</label>
