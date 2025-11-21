@@ -9,9 +9,8 @@
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-                <title>Create Product - Admin</title>
+                <title>Update Product - Admin</title>
 
-                <!-- Assets -->
                 <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
                 <link href="/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
                 <link href="/assets/css/style.css" rel="stylesheet">
@@ -24,13 +23,12 @@
 
                 <main id="main" class="main">
 
-                    <!-- Title -->
                     <div class="pagetitle">
-                        <h1>Create New Product</h1>
+                        <h1>Update Product</h1>
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="/products">Products</a></li>
-                            <li class="breadcrumb-item active">Create</li>
+                            <li class="breadcrumb-item active">Update</li>
                         </ol>
                     </div>
 
@@ -41,13 +39,11 @@
 
                                     <h5 class="card-title">Product Details</h5>
 
-                                    <!-- FORM -->
-                                    <form:form method="POST" action="/admin/product/create" modelAttribute="product"
+                                    <form:form method="POST" action="/admin/product/update" modelAttribute="product"
                                         class="row g-3">
 
                                         <form:hidden path="id" />
 
-                                        <!-- Name -->
                                         <div class="col-12">
                                             <label class="form-label">Tên Sản Phẩm <span
                                                     class="text-danger">*</span></label>
@@ -56,7 +52,6 @@
                                             <form:errors path="name" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Price -->
                                         <div class="col-md-4">
                                             <label class="form-label">Giá (VNĐ) <span
                                                     class="text-danger">*</span></label>
@@ -65,7 +60,6 @@
                                             <form:errors path="price" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Quantity -->
                                         <div class="col-md-4">
                                             <label class="form-label">Số Lượng <span
                                                     class="text-danger">*</span></label>
@@ -73,7 +67,6 @@
                                             <form:errors path="quantity" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Factory -->
                                         <div class="col-md-4">
                                             <label class="form-label">Nhà Sản Xuất</label>
                                             <form:input path="factory" class="form-control"
@@ -81,7 +74,6 @@
                                             <form:errors path="factory" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Target -->
                                         <div class="col-12">
                                             <label class="form-label">Mục Đích Sử Dụng</label>
                                             <form:input path="target" class="form-control"
@@ -89,7 +81,6 @@
                                             <form:errors path="target" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Short Description -->
                                         <div class="col-12">
                                             <label class="form-label">Mô Tả Ngắn</label>
                                             <form:textarea path="shortDesc" rows="2" class="form-control"
@@ -97,7 +88,6 @@
                                             <form:errors path="shortDesc" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Detail Description -->
                                         <div class="col-12">
                                             <label class="form-label">Mô Tả Chi Tiết</label>
                                             <form:textarea path="detailDesc" rows="5" class="form-control"
@@ -105,7 +95,6 @@
                                             <form:errors path="detailDesc" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Image -->
                                         <div class="col-12">
                                             <label class="form-label">Ảnh Sản Phẩm (URL/Path)</label>
                                             <form:input path="image" class="form-control"
@@ -113,10 +102,9 @@
                                             <form:errors path="image" cssClass="text-danger small" />
                                         </div>
 
-                                        <!-- Buttons -->
                                         <div class="text-center pt-3">
-                                            <button type="submit" class="btn btn-success me-2">
-                                                <i class="bi bi-save"></i> Lưu Sản Phẩm
+                                            <button type="submit" class="btn btn-primary me-2">
+                                                <i class="bi bi-arrow-repeat"></i> Cập Nhật Sản Phẩm
                                             </button>
                                             <a href="/products" class="btn btn-secondary">
                                                 <i class="bi bi-x-circle"></i> Hủy Bỏ

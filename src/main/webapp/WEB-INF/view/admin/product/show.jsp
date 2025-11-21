@@ -125,12 +125,11 @@
                                                                         <i class="fas fa-edit"></i>
                                                                     </a>
                                                                     <!-- Nút Delete (Xóa) -->
-                                                                    <button
-                                                                        onclick="confirmDelete('${product.id}', '${product.name}')"
+                                                                    <a href="/admin/product/delete/${product.id}"
                                                                         class="btn btn-danger btn-sm"
-                                                                        title="Xóa sản phẩm">
+                                                                        onclick="return confirm('Bạn có chắc muốn xóa sản phẩm ${product.name}?');">
                                                                         <i class="fas fa-trash-alt"></i>
-                                                                    </button>
+                                                                    </a>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>

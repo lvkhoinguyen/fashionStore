@@ -17,10 +17,6 @@
             </head>
 
             <body>
-                hello from jsp
-                <h1>${eric}</h1>
-                <h2>${name}</h2>
-                <button class="btn btn-success"> Submit</button>
             </body>
 
             </html>
