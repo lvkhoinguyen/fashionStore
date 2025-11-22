@@ -258,7 +258,7 @@
 
                                                                 <%-- Nút mua hàng/xem chi tiết --%>
                                                                     <div class="d-grid gap-2">
-                                                                        <a href="/products/${product.id}"
+                                                                        <a href="/product/detail/${product.id}"
                                                                             class="btn btn-outline-primary">
                                                                             <i class="fas fa-eye"></i> Xem Chi Tiết
                                                                         </a>
