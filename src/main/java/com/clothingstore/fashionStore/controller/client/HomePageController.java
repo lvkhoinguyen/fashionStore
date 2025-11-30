@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.clothingstore.fashionStore.domain.Product;
+import com.clothingstore.fashionStore.domain.User;
 import com.clothingstore.fashionStore.service.ProductService;
 
 @Controller
@@ -24,6 +25,12 @@ public class HomePageController {
         List<Product> products = this.productService.fetchAllProducts();
         model.addAttribute("products", products);
         return "client/homepage/show";
+    }
+
+    @GetMapping("/register")
+    public String getRegisterPage(Model model) {
+        model.addAttribute("user", new User());;
+        return "client/auth/register";
     }
 
 }
