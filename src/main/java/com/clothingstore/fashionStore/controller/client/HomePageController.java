@@ -2,6 +2,7 @@ package com.clothingstore.fashionStore.controller.client;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +14,19 @@ import com.clothingstore.fashionStore.domain.Product;
 import com.clothingstore.fashionStore.domain.User;
 import com.clothingstore.fashionStore.domain.dto.RegisterDTO;
 import com.clothingstore.fashionStore.service.ProductService;
+import com.clothingstore.fashionStore.service.UserService;
 
 @Controller
 public class HomePageController {
 
     private final ProductService productService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
-    public HomePageController(ProductService productService) {
+    public HomePageController(ProductService productService, UserService userService, PasswordEncoder passwordEncoder) {
         this.productService = productService;
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/")
@@ -35,11 +41,22 @@ public class HomePageController {
         model.addAttribute("registerUser", new RegisterDTO());
         return "client/auth/register";
     }
-    
 
     @PostMapping("/register")
     public String handleRegister(@ModelAttribute("registerUser") RegisterDTO registerDTO, Model model) {
-        return "client/auth/register";
+        User user = this.userService.registerDTOtoUser(registerDTO);
+        String encodedPassword = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        user.setRole(this.userService.getRoleByName("USER"));
+        this.userService.handleSaveUser(user);
+
+        return "redirect:/login";
     }
+
+    @GetMapping("/login")
+    public String getLoginPage(Model model) {
+        return "client/auth/login";
+    }
+    
 
 }
