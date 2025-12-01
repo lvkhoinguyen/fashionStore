@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,8 @@ import com.clothingstore.fashionStore.domain.User;
 import com.clothingstore.fashionStore.domain.dto.RegisterDTO;
 import com.clothingstore.fashionStore.service.ProductService;
 import com.clothingstore.fashionStore.service.UserService;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class HomePageController {
@@ -43,7 +46,12 @@ public class HomePageController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@ModelAttribute("registerUser") RegisterDTO registerDTO, Model model) {
+    public String handleRegister(@ModelAttribute("registerUser") @Valid RegisterDTO registerDTO, Model model,BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            return "client/auth/register";
+        }
+
+        
         User user = this.userService.registerDTOtoUser(registerDTO);
         String encodedPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);

@@ -1,5 +1,8 @@
 package com.clothingstore.fashionStore.domain.dto;
 
+import com.clothingstore.fashionStore.service.validator.RegisterChecked;
+
+@RegisterChecked
 public class RegisterDTO {
     private String fullName;
     private String email;
