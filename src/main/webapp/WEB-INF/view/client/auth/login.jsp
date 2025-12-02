@@ -43,16 +43,21 @@
                         </c:if>
 
                         <form:form method="POST" action="/login" modelAttribute="user">
-
+                            <c:if test="${param.error != null}">
+                                <div class="my-2" style="color: red;">Invalid email or password.</div>
+                            </c:if>
                             <div class="mb-3">
-                                <label for="email" class="form-label">Tên đăng nhập</label>
-                                <form:input type="text" path="email" id="email" class="form-control"
-                                    required="true" />
+                                <label for="email" class="form-label">email đăng nhập</label>
+                                <form:input type="text" path="email" id="email" class="form-control" required="true" />
                             </div>
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Mật khẩu</label>
                                 <form:password path="password" id="password" class="form-control" required="true" />
+                            </div>
+
+                            <div>
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
