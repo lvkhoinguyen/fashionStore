@@ -65,21 +65,17 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE).permitAll()
-                        .requestMatchers("/", "/login", "/css/**", "/js/**", "/img/**", "/assets/**", "/client/**")
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD,
+                                DispatcherType.INCLUDE)
+                        .permitAll()
+                        .requestMatchers("/", "/login", "/css/**", "/js/**", "/img/**", "/assets/**",
+                                "/client/**")
                         .permitAll()
                         .anyRequest().authenticated())
 
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .loginProcessingUrl("/do-login")
-                        .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error")
-                        .permitAll())
-
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
                         .permitAll());
 
         return http.build();

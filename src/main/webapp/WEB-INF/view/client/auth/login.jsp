@@ -47,8 +47,8 @@
                                 <div class="my-2" style="color: red;">Invalid email or password.</div>
                             </c:if>
                             <div class="mb-3">
-                                <label for="email" class="form-label">email đăng nhập</label>
-                                <form:input type="text" path="email" id="email" class="form-control" required="true" />
+                                <label for="email" class="form-label">Email đăng nhập</label>
+                                <input type="text" name="username" id="email" class="form-control" required />
                             </div>
 
                             <div class="mb-3">
