@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.HttpMessageConverterAuthenticationSuccessHandler.AuthenticationSuccess;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import com.clothingstore.fashionStore.service.UserService;
 import com.clothingstore.fashionStore.service.validator.CustomUserDetailsService;
@@ -75,7 +77,8 @@ public class SecurityConfiguration {
                                                 .dispatcherTypeMatchers(DispatcherType.FORWARD,
                                                                 DispatcherType.INCLUDE)
                                                 .permitAll()
-                                                .requestMatchers("/", "/login", "/product/detail/**", "/css/**",
+                                                .requestMatchers("/", "/login", "/register", "/product/detail/**",
+                                                                "/css/**",
                                                                 "/js/**",
                                                                 "/img/**", "/assets/**",
                                                                 "/client/**")
@@ -85,7 +88,8 @@ public class SecurityConfiguration {
                                                 .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
 
                                                 .anyRequest().authenticated())
-
+                                .rememberMe(r -> r.rememberMeServices(rememberMeServices())
+                                                .rememberMeServices(rememberMeServices()))
                                 .formLogin(login -> login
                                                 .loginPage("/login")
                                                 .failureUrl("/login?error")
@@ -93,6 +97,14 @@ public class SecurityConfiguration {
                                                 .permitAll());
 
                 return http.build();
+        }
+
+        @Bean
+        public RememberMeServices rememberMeServices() {
+                SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+                rememberMeServices.setAlwaysRemember(true);
+
+                return rememberMeServices;
         }
 
         @Bean
