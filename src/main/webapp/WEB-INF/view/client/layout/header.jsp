@@ -14,9 +14,6 @@
                         <ul>
                             <li><a href="<c:url value='/'/>" class="active">Trang chủ</a></li>
 
-                            <li><a href="<c:url value='/about'/>">Về chúng tôi</a></li>
-                            <li><a href="<c:url value='/blog'/>">Tin tức & Blog</a></li>
-
                             <li class="dropdown"><a href="<c:url value='/shop'/>"><span>Sản phẩm</span> <i
                                         class="bi bi-chevron-down toggle-dropdown"></i></a>
                                 <ul>
@@ -48,34 +45,32 @@
                             </li>
 
                             <c:choose>
-                                <c:when test="${not empty sessionScope.user}">
-                                    <li class="dropdown ms-3">
-                                        <a href="#">
-                                            <i class="bi bi-person fs-5 me-1"></i>
-                                            <span>${sessionScope.user.fullName}</span>
-                                            <i class="bi bi-chevron-down toggle-dropdown"></i>
-                                        </a>
-                                        <ul>
-                                            <li><a href="<c:url value='/profile'/>">Thông tin cá nhân</a></li>
-                                            <li><a href="<c:url value='/my-orders'/>">Đơn hàng của tôi</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a href="<c:url value='/logout'/>">Đăng xuất</a></li>
-                                        </ul>
-                                    </li>
+                                <c:when test="${not empty sessionScope.fullName}">
+                                    <div class="d-flex d-none d-lg-block">
+                                        <div class="dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="dropdownMenuLink"
+                                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Welcome, ${sessionScope.fullName}
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <li><a class="dropdown-item"
+                                                        href="/show_User_Profile/${sessionScope.id}">Profile</a></li>
+                                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </c:when>
 
                                 <c:otherwise>
-                                    <li class="ms-lg-4"><a href="<c:url value='/login'/>">Đăng nhập</a></li>
-                                    <li>
-                                        <a href="<c:url value='/register'/>"
-                                            style="background-color: var(--accent-color); color: white; padding: 8px 20px; border-radius: 50px; margin-left: 10px;">
-                                            Đăng ký
-                                        </a>
-                                    </li>
+                                    <!-- Not logged in: show login/register -->
+                                    <div class="d-flex">
+                                        <a href="/login" class="text-decoration-none mr-2 text-white">Login</a>
+                                        <span class="text-white mx-1">/</span>
+                                        <a href="/register" class="text-decoration-none text-white">Register</a>
+                                    </div>
                                 </c:otherwise>
                             </c:choose>
+
 
                         </ul>
                         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

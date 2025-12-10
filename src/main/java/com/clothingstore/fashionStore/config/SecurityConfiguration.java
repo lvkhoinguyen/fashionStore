@@ -1,10 +1,9 @@
 package com.clothingstore.fashionStore.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,9 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.HttpMessageConverterAuthenticationSuccessHandler.AuthenticationSuccess;
 import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 import com.clothingstore.fashionStore.service.UserService;
 import com.clothingstore.fashionStore.service.validator.CustomUserDetailsService;
@@ -30,94 +28,76 @@ public class SecurityConfiguration {
                 return new BCryptPasswordEncoder();
         }
 
-        // @Bean
-        // public SecurityFilterChain securityFilterChain(HttpSecurity http) throws
-        // Exception {
-        // http
-        // .authorizeHttpRequests(auth -> auth
-        // .requestMatchers("/**").permitAll()
-        // .anyRequest().authenticated())
-        // .csrf(csrf -> csrf.disable())
-        // .formLogin(form -> form.disable())
-        // .httpBasic(basic -> basic.disable());
-
-        // return http.build();
-        // }
-
         @Bean
         public UserDetailsService userDetailsService(UserService userService) {
                 return new CustomUserDetailsService(userService);
-
-        }
-
-        @Bean
-        public AuthenticationManager authenticationManager(HttpSecurity http,
-                        PasswordEncoder passwordEncoder,
-                        UserDetailsService userDetailsService) throws Exception {
-                AuthenticationManagerBuilder authenticationManagerBuilder = http
-                                .getSharedObject(AuthenticationManagerBuilder.class);
-                authenticationManagerBuilder
-                                .userDetailsService(userDetailsService)
-                                .passwordEncoder(passwordEncoder);
-                return authenticationManagerBuilder.build();
-        }
-
-        @Bean
-        public AuthenticationSuccessHandler customSuccessHandler() {
-                return new CustomSuccesHandler();
-        }
-
-        @Bean
-        SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-                http
-                                .csrf(csrf -> csrf.disable())
-
-                                .authorizeHttpRequests(auth -> auth
-                                                .dispatcherTypeMatchers(DispatcherType.FORWARD,
-                                                                DispatcherType.INCLUDE)
-                                                .permitAll()
-                                                .requestMatchers("/", "/login", "/register", "/product/detail/**",
-                                                                "/css/**",
-                                                                "/js/**",
-                                                                "/img/**", "/assets/**",
-                                                                "/client/**")
-                                                .permitAll()
-
-                                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-
-                                                .anyRequest().authenticated())
-                                .rememberMe(r -> r.rememberMeServices(rememberMeServices())
-                                                .rememberMeServices(rememberMeServices()))
-                                .formLogin(login -> login
-                                                .loginPage("/login")
-                                                .failureUrl("/login?error")
-                                                .successHandler(customSuccessHandler())
-                                                .permitAll());
-
-                return http.build();
-        }
-
-        @Bean
-        public RememberMeServices rememberMeServices() {
-                SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
-                rememberMeServices.setAlwaysRemember(true);
-
-                return rememberMeServices;
         }
 
         @Bean
         public DaoAuthenticationProvider authProvider(
                         PasswordEncoder passwordEncoder,
                         UserDetailsService userDetailsService) {
-
                 DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
                 authProvider.setUserDetailsService(userDetailsService);
                 authProvider.setPasswordEncoder(passwordEncoder);
-                authProvider.setHideUserNotFoundExceptions(false);
-
                 return authProvider;
         }
 
+        @Bean
+        public AuthenticationSuccessHandler customSuccessHandler(UserService userService) {
+                return new CustomSuccessHandler(userService);
+        }
+
+        @Bean
+        public RememberMeServices rememberMeServices(UserDetailsService userDetailsService) {
+                TokenBasedRememberMeServices rememberMeServices = new TokenBasedRememberMeServices(
+                                "uniqueAndSecretKey", userDetailsService);
+                rememberMeServices.setAlwaysRemember(true);
+                return rememberMeServices;
+        }
+
+        @Bean
+        SecurityFilterChain filterChain(HttpSecurity http,
+                        AuthenticationSuccessHandler customSuccessHandler,
+                        RememberMeServices rememberMeServices) throws Exception {
+                http
+                                .authorizeHttpRequests(authorize -> authorize
+                                                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE)
+                                                .permitAll()
+                                                // Cho phép truy cập các file tĩnh và trang public
+                                                .requestMatchers("/", "/login", "/register", "/product/**",
+                                                                "/client/**", "/css/**", "/js/**", "/images/**")
+                                                .permitAll()
+
+                                                // Phân quyền
+                                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+
+                                                // Các request còn lại phải đăng nhập
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .loginProcessingUrl("/login") // Khớp với action="${...}/login" trong
+                                                                              // JSP
+
+                                                // QUAN TRỌNG: Khớp với name="" trong thẻ input của JSP
+                                                .usernameParameter("username")
+                                                .passwordParameter("password")
+
+                                                .successHandler(customSuccessHandler)
+                                                .failureUrl("/login?error")
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutRequestMatcher(
+                                                                new org.springframework.security.web.util.matcher.AntPathRequestMatcher(
+                                                                                "/logout"))
+                                                .logoutSuccessUrl("/login?logout")
+                                                .deleteCookies("JSESSIONID")
+                                                .invalidateHttpSession(true)
+                                                .permitAll())
+                                .rememberMe(remember -> remember
+                                                .rememberMeServices(rememberMeServices));
+
+                return http.build();
+        }
 }

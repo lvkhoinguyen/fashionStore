@@ -17,6 +17,8 @@ import com.clothingstore.fashionStore.domain.dto.RegisterDTO;
 import com.clothingstore.fashionStore.service.ProductService;
 import com.clothingstore.fashionStore.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -33,9 +35,12 @@ public class HomePageController {
     }
 
     @GetMapping("/")
-    public String getHomePage(Model model) {
+    public String getHomePage(Model model, HttpServletRequest request) {
         List<Product> products = this.productService.fetchAllProducts();
         model.addAttribute("products", products);
+
+        HttpSession session = request.getSession(false);
+
         return "client/homepage/show";
     }
 
@@ -46,12 +51,12 @@ public class HomePageController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@ModelAttribute("registerUser") @Valid RegisterDTO registerDTO, Model model,BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
+    public String handleRegister(@ModelAttribute("registerUser") @Valid RegisterDTO registerDTO, Model model,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "client/auth/register";
         }
 
-        
         User user = this.userService.registerDTOtoUser(registerDTO);
         String encodedPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
@@ -66,6 +71,5 @@ public class HomePageController {
         model.addAttribute("user", new User());
         return "client/auth/login";
     }
-    
 
 }
